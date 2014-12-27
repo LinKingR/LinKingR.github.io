@@ -3,17 +3,20 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Archives: 2014 | 小林子的博客</title>
+  <title>Handler and Looper | 小林子的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="新的开始">
-<meta property="og:type" content="website">
-<meta property="og:title" content="小林子的博客">
-<meta property="og:url" content="http://blog.linkingr/archives/2014/">
+  <meta name="description" content="安卓刚入门的时候就知道，系统为每个应用进程分配了一个主线程，也就是ui线程，我们也在一开始就会使用message与主线程进行通信，说起handler，looper，message甚至messageQuene，相信我们很多人都只知道并且会用，那么到底线程间通信究竟发生了什么事情，这里就来简单了解一下Handle和Looper。
+这里首先要提到刚才提到的这四个类，Handler，Looper，Mess">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Handler and Looper">
+<meta property="og:url" content="http://blog.linkingr/2014/06/18/Handler-and-Looper/">
 <meta property="og:site_name" content="小林子的博客">
-<meta property="og:description" content="新的开始">
+<meta property="og:description" content="安卓刚入门的时候就知道，系统为每个应用进程分配了一个主线程，也就是ui线程，我们也在一开始就会使用message与主线程进行通信，说起handler，looper，message甚至messageQuene，相信我们很多人都只知道并且会用，那么到底线程间通信究竟发生了什么事情，这里就来简单了解一下Handle和Looper。
+这里首先要提到刚才提到的这四个类，Handler，Looper，Mess">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="小林子的博客">
-<meta name="twitter:description" content="新的开始">
+<meta name="twitter:title" content="Handler and Looper">
+<meta name="twitter:description" content="安卓刚入门的时候就知道，系统为每个应用进程分配了一个主线程，也就是ui线程，我们也在一开始就会使用message与主线程进行通信，说起handler，looper，message甚至messageQuene，相信我们很多人都只知道并且会用，那么到底线程间通信究竟发生了什么事情，这里就来简单了解一下Handle和Looper。
+这里首先要提到刚才提到的这四个类，Handler，Looper，Mess">
 
   
     <link rel="alternative" href="/atom.xml" title="小林子的博客" type="application/atom+xml">
@@ -61,51 +64,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-test" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/12/27/test/" class="article-date">
-  <time datetime="2014-12-27T04:29:00.000Z" itemprop="datePublished">12月 27 2014</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/27/test/">什么是爱情</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>2014年11月23日，我分手了，一年零七个月，568天的异地恋，最终两个人选择了分开。我们一个家在河北，一个家在海南，一个在北京工作，一个在郑州读书，在杭州旅游时相遇，一个月见一次，我们就这样，谈着没有任何基础的异地恋，快乐着，幸福着，憧憬过一起买菜的日子，向往着一起变老的爱情，可最后的最后，两个人还是没办法挣脱现实，还是忘记了说好的幸福。</p>
-<p>也许你会说，两个人相距这么远，又是异地，分开也没什么，其实你说的对，对于我们这种完全没有任何基础的情侣，能坚持到底的异地恋情真的是很艰难。但是，这真的是我第一次付出真心的感情，分开的刺痛，像刀一样一下一下的戳着我的心，我不知道自己流了多少泪水，不知道多少个夜辗转反侧，但那有能怎样，现实没办法改变，爱情终将败给现实。</p>
-<p>以前我总是想不清楚一件事，什么是喜欢，什么是爱，这次分开让我忽然想的特别明白，喜欢就会放肆，而爱就会克制，喜欢就是一种冲动，而爱就是一份坚守，喜欢就是我对你好，而爱就是我愿意为你放弃一切。所以那时候，你总说爱我，其实你只是喜欢我，喜欢阳光下的我，喜欢微笑的我，那时候，我也只是喜欢你，我带你去玩，给你买东西，但是我们都没上升到爱，在选择未来的时候，我们只考虑了自己，你说你不想来北京，你说你现在最主要的事情是课题，你说你凭什么要去讨好我的父母，我说为什么你不能考到北京，我说你为什么不能多花时间陪陪我，我说为什么你总是考虑你自己，这不是爱，<strong>爱是包容，是理解，是信任，是愿意为对方付出一切</strong>，而喜欢，就只是节日里我给你买个礼物，放假了我们一起去玩耍，爱是需要时间的，是慢慢喜欢而后变成的，当你觉得你愿意为这个人放弃你的所有的时候，你就爱上TA了。当我分开的时候，我发现我爱你，我什么都可以不要，但我不能失去你，只可惜已经来不及了。</p>
-<p>爱情就是这样，你只有一次的机会，错过了，就算再找回来，也会变味了，就像你分开的时候对我说的那些话，就算再找回来，你的狠心和绝情还是烙在了我的心里，我会害怕有一天你还是会离开我，我害怕你在我父母那受到一点委屈，你就会受不了。你说你现在很忙，所以我愿意放你自由。</p>
-<p>爱情，是在对的时间对的地点遇到对的人，对的时间，就是你二十五岁，经历了分开与伤害，懂得了珍惜，想要找一个相伴一生的人，对的地点，就是在一个城市，你决定在那里生活，你喜欢那里的生活，对的人，就是另外一个也刚好在对的时间，刚好在你在的城市，刚好又喜欢你的人。所以我们并不是合适的人，她并没有在对的时间，我们也没有在合适的地点，也许人是对的，但是现实太残酷，我们没办法克服，所以我们必然会分开。</p>
-<p>最后我想说，<strong>如果爱，请深爱，能不分开，请不要分开</strong>。颖颖，祝你幸福，我会去我们相识的城市，重新开始，好好生活。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://blog.linkingr/2014/12/27/test/" data-id="mp9lwabizfkse8u7" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Handler-and-Looper" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-Handler-and-Looper" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/06/18/Handler-and-Looper/" class="article-date">
   <time datetime="2014-06-18T06:38:07.000Z" itemprop="datePublished">6月 18 2014</time>
@@ -118,8 +77,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/06/18/Handler-and-Looper/">Handler and Looper</a>
+    <h1 class="article-title" itemprop="name">
+      Handler and Looper
     </h1>
   
 
@@ -176,11 +135,24 @@
     </footer>
   </div>
   
+    
+<nav id="article-nav">
+  
+    <a href="/2014/12/27/test/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          什么是爱情
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+  
 </article>
 
-
-  
-  
 </section>
         
           <aside id="sidebar">
