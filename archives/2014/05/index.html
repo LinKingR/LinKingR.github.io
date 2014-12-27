@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Archives: 2014/5 | 小林子的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="新的开始">
+<meta property="og:type" content="website">
+<meta property="og:title" content="小林子的博客">
+<meta property="og:url" content="http://blog.linkingr/archives/2014/05/">
+<meta property="og:site_name" content="小林子的博客">
+<meta property="og:description" content="新的开始">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="小林子的博客">
+<meta name="twitter:description" content="新的开始">
+
+  
+    <link rel="alternative" href="/atom.xml" title="小林子的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">小林子的博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://blog.linkingr"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-Loaders" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/05/07/Loaders/" class="article-date">
+  <time datetime="2014-05-07T08:20:13.000Z" itemprop="datePublished">5月 7 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/05/07/Loaders/">Loaders</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="背景">背景</h3>
+<p>Loader3.0被引入安卓，使得在页面中异步数据加载变得更加容易，生命周期管理更加方便，不会再出现页面结束后数据回调的问题，接口简单易用。</p>
+<p>support包中提供了Loader对低版本的支持，接下来就简单讲一下Loader在support包中的实现和用法。</p>
+<h3 id="如何使用">如何使用</h3>
+<p>在每个activity和fragment里面，只有一个LoaderManager，可以通过getLoaderManager得到</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">LoaderManagerImpl getLoaderManager(<span class="built_in">String</span> who, <span class="built_in">boolean</span> started, <span class="built_in">boolean</span> create) {</div><div class="line">        <span class="keyword">if</span> (mAllLoaderManagers == <span class="literal">null</span>) {</div><div class="line">            mAllLoaderManagers = <span class="keyword">new</span> SimpleArrayMap&lt;<span class="built_in">String</span>, LoaderManagerImpl&gt;();</div><div class="line">        }</div><div class="line">        LoaderManagerImpl lm = mAllLoaderManagers.get(who);</div><div class="line">        <span class="keyword">if</span> (lm == <span class="literal">null</span>) {</div><div class="line">            <span class="keyword">if</span> (create) {</div><div class="line">                lm = <span class="keyword">new</span> LoaderManagerImpl(who, <span class="keyword">this</span>, started);</div><div class="line">                mAllLoaderManagers.put(who, lm);</div><div class="line">            }</div><div class="line">        } <span class="keyword">else</span> {</div><div class="line">            lm.updateActivity(<span class="keyword">this</span>);</div><div class="line">        }</div><div class="line">        <span class="keyword">return</span> lm;</div><div class="line">    }</div><div class="line">这是fragmentActivity中的一段代码，其中维护了一个map，用who做key，这个activity以及所有的子fragment的LoaderManager都会放在这个map中其中actvity的key为(root),fragment的key为(root):index</div></pre></td></tr></table></figure>
+
+<p>那么如何启动一个Loader呢？</p>
+<p>需要这句话getLoaderManager().initLoader(0, null, this);一般放在onCreate或onActivityCreated里面</p>
+<p>其中第一个参数是id，第二个参数是bundle，bundle参数会传递到onCreateLoader方法里面，第三个参数是LoaderManager.LoaderCallbacks回调接口。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> &lt;D&gt; Loader&lt;D&gt; <span class="title">initLoader</span>(<span class="keyword">int</span> id, Bundle args, LoaderManager.LoaderCallbacks&lt;D&gt; callback) {</div><div class="line">    <span class="keyword">if</span> (mCreatingLoader) {</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Called while creating a loader"</span>);</div><div class="line">    }</div><div class="line">     </div><div class="line">    LoaderInfo info = mLoaders.<span class="keyword">get</span>(id);</div><div class="line">     </div><div class="line">    <span class="keyword">if</span> (DEBUG) Log.v(TAG, <span class="string">"initLoader in "</span> + <span class="keyword">this</span> + <span class="string">": args="</span> + args);</div><div class="line">    <span class="keyword">if</span> (info == <span class="keyword">null</span>) {</div><div class="line">        <span class="comment">// Loader doesn't already exist; create.</span></div><div class="line">        info = createAndInstallLoader(id, args,  (LoaderManager.LoaderCallbacks&lt;Object&gt;)callback);</div><div class="line">        <span class="keyword">if</span> (DEBUG) Log.v(TAG, <span class="string">"  Created new loader "</span> + info);</div><div class="line">    } <span class="keyword">else</span> {</div><div class="line">        <span class="keyword">if</span> (DEBUG) Log.v(TAG, <span class="string">"  Re-using existing loader "</span> + info);</div><div class="line">        info.mCallbacks = (LoaderManager.LoaderCallbacks&lt;Object&gt;)callback;</div><div class="line">    }</div><div class="line">     </div><div class="line">    <span class="keyword">if</span> (info.mHaveData && mStarted) {</div><div class="line">        <span class="comment">// If the loader has already generated its data, report it now.</span></div><div class="line">        info.callOnLoadFinished(info.mLoader, info.mData);</div><div class="line">    }</div><div class="line">     </div><div class="line">    <span class="keyword">return</span> (Loader&lt;D&gt;)info.mLoader;</div><div class="line">}</div><div class="line"> </div><div class="line"><span class="keyword">private</span> LoaderInfo <span class="title">createLoader</span>(<span class="keyword">int</span> id, Bundle args,</div><div class="line">        LoaderManager.LoaderCallbacks&lt;Object&gt; callback) {</div><div class="line">    LoaderInfo info = <span class="keyword">new</span> LoaderInfo(id, args,  (LoaderManager.LoaderCallbacks&lt;Object&gt;)callback);</div><div class="line">    Loader&lt;Object&gt; loader = callback.onCreateLoader(id, args);</div><div class="line">    info.mLoader = (Loader&lt;Object&gt;)loader;</div><div class="line">    <span class="keyword">return</span> info;</div><div class="line">}</div><div class="line"> </div><div class="line"><span class="keyword">private</span> LoaderInfo <span class="title">createAndInstallLoader</span>(<span class="keyword">int</span> id, Bundle args,</div><div class="line">        LoaderManager.LoaderCallbacks&lt;Object&gt; callback) {</div><div class="line">    <span class="keyword">try</span> {</div><div class="line">        mCreatingLoader = <span class="keyword">true</span>;</div><div class="line">        LoaderInfo info = createLoader(id, args, callback);</div><div class="line">        installLoader(info);</div><div class="line">        <span class="keyword">return</span> info;</div><div class="line">    } <span class="keyword">finally</span> {</div><div class="line">        mCreatingLoader = <span class="keyword">false</span>;</div><div class="line">    }</div><div class="line">}</div><div class="line"> </div><div class="line"><span class="keyword">void</span> installLoader(LoaderInfo info) {</div><div class="line">    mLoaders.put(info.mId, info);</div><div class="line">    <span class="keyword">if</span> (mStarted) {</div><div class="line">        <span class="comment">// The activity will start all existing loaders in it's onStart(),</span></div><div class="line">        <span class="comment">// so only start them here if we're past that point of the activitiy's</span></div><div class="line">        <span class="comment">// life cycle</span></div><div class="line">        info.start();</div><div class="line">    }</div><div class="line">}</div><div class="line">createLoader方法中会调用callback对象的onCreateLoader方法创建Loader，并将它加入到当前LoaderManager维护的以id为key的map中，并开启start。</div><div class="line"><span class="keyword">void</span> start() {</div><div class="line">        <span class="keyword">if</span> (mRetaining && mRetainingStarted) {</div><div class="line">            <span class="comment">// Our owner is started, but we were being retained from a</span></div><div class="line">            <span class="comment">// previous instance in the started state...  so there is really</span></div><div class="line">            <span class="comment">// nothing to do here, since the loaders are still started.</span></div><div class="line">            mStarted = <span class="keyword">true</span>;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        }</div><div class="line">        <span class="keyword">if</span> (mStarted) {</div><div class="line">            <span class="comment">// If loader already started, don't restart.</span></div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        }</div><div class="line">        mStarted = <span class="keyword">true</span>;</div><div class="line">         </div><div class="line">        <span class="keyword">if</span> (DEBUG) Log.v(TAG, <span class="string">"  Starting: "</span> + <span class="keyword">this</span>);</div><div class="line">        <span class="keyword">if</span> (mLoader == <span class="keyword">null</span> && mCallbacks != <span class="keyword">null</span>) {</div><div class="line">           mLoader = mCallbacks.onCreateLoader(mId, mArgs);</div><div class="line">        }</div><div class="line">        <span class="keyword">if</span> (mLoader != <span class="keyword">null</span>) {</div><div class="line">            <span class="keyword">if</span> (mLoader.getClass().isMemberClass()</div><div class="line">                    && !Modifier.isStatic(mLoader.getClass().getModifiers())) {</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(</div><div class="line">                        <span class="string">"Object returned from onCreateLoader must not be a non-static inner member class: "</span></div><div class="line">                        + mLoader);</div><div class="line">            }</div><div class="line">            <span class="keyword">if</span> (!mListenerRegistered) {</div><div class="line">                mLoader.registerListener(mId, <span class="keyword">this</span>);</div><div class="line">                mListenerRegistered = <span class="keyword">true</span>;</div><div class="line">            }</div><div class="line">            mLoader.startLoading();</div><div class="line">        }</div><div class="line">    }</div><div class="line">start方法中调用了Loader的startLoading方法，这时候就会回调Loader实现类的onStartLoading方法。</div></pre></td></tr></table></figure>
+
+<p>可以看到如果Loader存在，initLoader是会直接返回当前Loader数据，而不会重新走Loader的startLoading，那么restartLoader是怎么用的呢？</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="subst">&lt;</span>D<span class="subst">&gt;</span> Loader<span class="subst">&lt;</span>D<span class="subst">&gt;</span> restartLoader(int id, Bundle args, LoaderManager<span class="built_in">.</span>LoaderCallbacks<span class="subst">&lt;</span>D<span class="subst">&gt;</span> callback) {</div><div class="line">        <span class="keyword">if</span> (mCreatingLoader) {</div><div class="line">            throw <span class="literal">new</span> IllegalStateException(<span class="string">"Called while creating a loader"</span>);</div><div class="line">        }</div><div class="line">         </div><div class="line">        LoaderInfo info <span class="subst">=</span> mLoaders<span class="built_in">.</span>get(id);</div><div class="line">        <span class="keyword">if</span> (DEBUG) <span class="keyword">Log</span><span class="built_in">.</span>v(<span class="built_in">TAG</span>, <span class="string">"restartLoader in "</span> <span class="subst">+</span> this <span class="subst">+</span> <span class="string">": args="</span> <span class="subst">+</span> args);</div><div class="line">        <span class="keyword">if</span> (info <span class="subst">!=</span> <span class="built_in">null</span>) {</div><div class="line">            LoaderInfo inactive <span class="subst">=</span> mInactiveLoaders<span class="built_in">.</span>get(id);</div><div class="line">            <span class="keyword">if</span> (inactive <span class="subst">!=</span> <span class="built_in">null</span>) {</div><div class="line">                <span class="keyword">if</span> (info<span class="built_in">.</span>mHaveData) {</div><div class="line">                    <span class="comment">// This loader now has data...  we are probably being</span></div><div class="line">                    <span class="comment">// called from within onLoadComplete, where we haven't</span></div><div class="line">                    <span class="comment">// yet destroyed the last inactive loader.  So just do</span></div><div class="line">                    <span class="comment">// that now.</span></div><div class="line">                    <span class="keyword">if</span> (DEBUG) <span class="keyword">Log</span><span class="built_in">.</span>v(<span class="built_in">TAG</span>, <span class="string">"  Removing last inactive loader: "</span> <span class="subst">+</span> info);</div><div class="line">                    inactive<span class="built_in">.</span>mDeliveredData <span class="subst">=</span> <span class="literal">false</span>;</div><div class="line">                    inactive<span class="built_in">.</span>destroy();</div><div class="line">                    info<span class="built_in">.</span>mLoader<span class="built_in">.</span>abandon();</div><div class="line">                    mInactiveLoaders<span class="built_in">.</span>put(id, info);</div><div class="line">                } <span class="keyword">else</span> {</div><div class="line">                    <span class="comment">// We already have an inactive loader for this ID that we are</span></div><div class="line">                    <span class="comment">// waiting for!  What to do, what to do...</span></div><div class="line">                    <span class="keyword">if</span> (<span class="subst">!</span>info<span class="built_in">.</span>mStarted) {</div><div class="line">                        <span class="comment">// The current Loader has not been started...  we thus</span></div><div class="line">                        <span class="comment">// have no reason to keep it around, so bam, slam,</span></div><div class="line">                        <span class="comment">// thank-you-ma'am.</span></div><div class="line">                        <span class="keyword">if</span> (DEBUG) <span class="keyword">Log</span><span class="built_in">.</span>v(<span class="built_in">TAG</span>, <span class="string">"  Current loader is stopped; replacing"</span>);</div><div class="line">                        mLoaders<span class="built_in">.</span>put(id, <span class="built_in">null</span>);</div><div class="line">                        info<span class="built_in">.</span>destroy();</div><div class="line">                    } <span class="keyword">else</span> {</div><div class="line">                        <span class="comment">// Now we have three active loaders... we'll queue</span></div><div class="line">                        <span class="comment">// up this request to be processed once one of the other loaders</span></div><div class="line">                        <span class="comment">// finishes.</span></div><div class="line">                        <span class="keyword">if</span> (info<span class="built_in">.</span>mPendingLoader <span class="subst">!=</span> <span class="built_in">null</span>) {</div><div class="line">                            <span class="keyword">if</span> (DEBUG) <span class="keyword">Log</span><span class="built_in">.</span>v(<span class="built_in">TAG</span>, <span class="string">"  Removing pending loader: "</span> <span class="subst">+</span> info<span class="built_in">.</span>mPendingLoader);</div><div class="line">                            info<span class="built_in">.</span>mPendingLoader<span class="built_in">.</span>destroy();</div><div class="line">                            info<span class="built_in">.</span>mPendingLoader <span class="subst">=</span> <span class="built_in">null</span>;</div><div class="line">                        }</div><div class="line">                        <span class="keyword">if</span> (DEBUG) <span class="keyword">Log</span><span class="built_in">.</span>v(<span class="built_in">TAG</span>, <span class="string">"  Enqueuing as new pending loader"</span>);</div><div class="line">                        info<span class="built_in">.</span>mPendingLoader <span class="subst">=</span> createLoader(id, args,</div><div class="line">                                (LoaderManager<span class="built_in">.</span>LoaderCallbacks<span class="subst">&lt;</span>Object<span class="subst">&gt;</span>)callback);</div><div class="line">                        <span class="keyword">return</span> (Loader<span class="subst">&lt;</span>D<span class="subst">&gt;</span>)info<span class="built_in">.</span>mPendingLoader<span class="built_in">.</span>mLoader;</div><div class="line">                    }</div><div class="line">                }</div><div class="line">            } <span class="keyword">else</span> {</div><div class="line">                <span class="comment">// Keep track of the previous instance of this loader so we can destroy</span></div><div class="line">                <span class="comment">// it when the new one completes.</span></div><div class="line">                <span class="keyword">if</span> (DEBUG) <span class="keyword">Log</span><span class="built_in">.</span>v(<span class="built_in">TAG</span>, <span class="string">"  Making last loader inactive: "</span> <span class="subst">+</span> info);</div><div class="line">                info<span class="built_in">.</span>mLoader<span class="built_in">.</span>abandon();</div><div class="line">                mInactiveLoaders<span class="built_in">.</span>put(id, info);</div><div class="line">            }</div><div class="line">        }</div><div class="line">         </div><div class="line">        info <span class="subst">=</span> createAndInstallLoader(id, args,  (LoaderManager<span class="built_in">.</span>LoaderCallbacks<span class="subst">&lt;</span>Object<span class="subst">&gt;</span>)callback);</div><div class="line">        <span class="keyword">return</span> (Loader<span class="subst">&lt;</span>D<span class="subst">&gt;</span>)info<span class="built_in">.</span>mLoader;</div><div class="line">    }</div><div class="line">mInactiveLoaders的意思表示之前运行过的Loader，这里主要做的事情是吧当前Loader的数据abandon掉，并且将其移入旧的Loader列表，然后创建新的Loader并运行。</div><div class="line">所以这种情况是会重新走onCreateLoader的。</div><div class="line">有一种情况很有意思，就是如果它发现之前的Loader已经开启，但还没有获取数据，就会重新开启一个新的pendingLoader，这个Loader其实和那个Loader的id是一样的。</div></pre></td></tr></table></figure>
+
+<p>那么Loader是怎样获取数据的呢？一般都是继承Loader并实现其中的方法，我以AsyncTaskLoader为例讲解，CursorLoader我用的不多，但是官方文档上是以CursorLoader为例进行讲解的，有兴趣的同学可以看看。</p>
+<p>那么说到了onStartLoading的回调，AsyncTaskLoader并没有重写这个方法，所以必须由它的子类重写该方法。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">    <span class="keyword">protected</span> <span class="literal">void</span> onStartLoading() {</div><div class="line">        <span class="keyword">if</span> (<span class="built_in">data</span> <span class="subst">!=</span> <span class="built_in">null</span>) {</div><div class="line">            deliverResult(<span class="built_in">data</span>);</div><div class="line">        }</div><div class="line">        <span class="keyword">if</span> (takeContentChanged() <span class="subst">||</span> <span class="built_in">data</span> <span class="subst">==</span> <span class="built_in">null</span>) {</div><div class="line">            forceLoad();</div><div class="line">        }</div><div class="line">    }</div><div class="line">这个方法是在AsyncTaskLoader的子类里实现的，我们使用的时候takeContentChange一定是<span class="literal">false</span>，因为我们没有用过ContentObserver，可以看CursorLoader的源码，里面有一个registeContentObserver的方法，当对应URI的数据源发生变化时，observer会调用onContentChange修改这个方法，实现数据的重新加载。</div><div class="line">     </div><div class="line">    @Override</div><div class="line">    <span class="keyword">protected</span> <span class="literal">void</span> onForceLoad() {</div><div class="line">        super<span class="built_in">.</span>onForceLoad();</div><div class="line">        cancelLoad();</div><div class="line">        mTask <span class="subst">=</span> <span class="literal">new</span> LoadTask();</div><div class="line">        <span class="keyword">if</span> (DEBUG) <span class="keyword">Log</span><span class="built_in">.</span>v(<span class="built_in">TAG</span>, <span class="string">"Preparing load: mTask="</span> <span class="subst">+</span> mTask);</div><div class="line">        executePendingTask();</div><div class="line">    }</div><div class="line">这里会首先cancel掉之前的task，然后创建一个新的task并开启这个task，这个task就是之前讲过的AsyncTask，所以这里也会开启一个后台线程，运行loadInBackground方法并返回数据。</div><div class="line">当数据加载结束后通过这个方法进行回调</div><div class="line"> <span class="literal">void</span> dispatchOnLoadComplete(LoadTask task, D <span class="built_in">data</span>) {</div><div class="line">        <span class="keyword">if</span> (mTask <span class="subst">!=</span> task) {</div><div class="line">            <span class="keyword">if</span> (DEBUG) <span class="keyword">Log</span><span class="built_in">.</span>v(<span class="built_in">TAG</span>, <span class="string">"Load complete of old task, trying to cancel"</span>);</div><div class="line">            dispatchOnCancelled(task, <span class="built_in">data</span>);</div><div class="line">        } <span class="keyword">else</span> {</div><div class="line">            <span class="keyword">if</span> (isAbandoned()) {</div><div class="line">                <span class="comment">// This cursor has been abandoned; just cancel the new data.</span></div><div class="line">                onCanceled(<span class="built_in">data</span>);</div><div class="line">            } <span class="keyword">else</span> {</div><div class="line">                commitContentChanged();</div><div class="line">                mLastLoadCompleteTime <span class="subst">=</span> SystemClock<span class="built_in">.</span>uptimeMillis();</div><div class="line">                mTask <span class="subst">=</span> <span class="built_in">null</span>;</div><div class="line">                <span class="keyword">if</span> (DEBUG) <span class="keyword">Log</span><span class="built_in">.</span>v(<span class="built_in">TAG</span>, <span class="string">"Delivering result"</span>);</div><div class="line">                deliverResult(<span class="built_in">data</span>);</div><div class="line">            }</div><div class="line">        }</div><div class="line">    }</div><div class="line">这里的deliverResult用来返回数据，回调到callback的onLoadFinished方法，注意这里的<span class="built_in">data</span>是有可能为空的。</div></pre></td></tr></table></figure>
+
+<p>那么callback方法中还剩下一个onLoaderReset方法，它是怎么使用的呢？</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">void destroy() {</div><div class="line">            <span class="keyword">if</span> (DEBUG) Log.v(TAG, <span class="string">"  Destroying: "</span> + this);</div><div class="line">            <span class="variable">mDestroyed =</span> <span class="constant">true</span>;</div><div class="line">            boolean <span class="variable">needReset =</span> mDeliveredData;</div><div class="line">            <span class="variable">mDeliveredData =</span> <span class="constant">false</span>;</div><div class="line">            <span class="keyword">if</span> (mCallbacks != <span class="constant">null</span> && mLoader != <span class="constant">null</span> && mHaveData && needReset) {</div><div class="line">                <span class="keyword">if</span> (DEBUG) Log.v(TAG, <span class="string">"  Reseting: "</span> + this);</div><div class="line">                String <span class="variable">lastBecause =</span> <span class="constant">null</span>;</div><div class="line">                <span class="keyword">if</span> (mActivity != <span class="constant">null</span>) {</div><div class="line">                    <span class="variable">lastBecause =</span> mActivity.mFragments.mNoTransactionsBecause;</div><div class="line">                    mActivity.mFragments.<span class="variable">mNoTransactionsBecause =</span> <span class="string">"onLoaderReset"</span>;</div><div class="line">                }</div><div class="line">                try {</div><div class="line">                    mCallbacks.onLoaderReset(mLoader);</div><div class="line">                } finally {</div><div class="line">                    <span class="keyword">if</span> (mActivity != <span class="constant">null</span>) {</div><div class="line">                        mActivity.mFragments.<span class="variable">mNoTransactionsBecause =</span> lastBecause;</div><div class="line">                    }</div><div class="line">                }</div><div class="line">            }</div><div class="line">            <span class="variable">mCallbacks =</span> <span class="constant">null</span>;</div><div class="line">            <span class="variable">mData =</span> <span class="constant">null</span>;</div><div class="line">            <span class="variable">mHaveData =</span> <span class="constant">false</span>;</div><div class="line">            <span class="keyword">if</span> (mLoader != <span class="constant">null</span>) {</div><div class="line">                <span class="keyword">if</span> (mListenerRegistered) {</div><div class="line">                    <span class="variable">mListenerRegistered =</span> <span class="constant">false</span>;</div><div class="line">                    mLoader.unregisterListener(this);</div><div class="line">                }</div><div class="line">                mLoader.reset();</div><div class="line">            }</div><div class="line">            <span class="keyword">if</span> (mPendingLoader != <span class="constant">null</span>) {</div><div class="line">                mPendingLoader.destroy();</div><div class="line">            }</div><div class="line">        }</div><div class="line">可以看到它出现在了destory方法里面，在fragment的onDestroy方法会调用所有Loader的destory方法，相当于当前Loader被销毁，这时候才会调用reset，所以这个方法一般没有用，或者做一些数据清除的操作。</div></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.linkingr/2014/05/07/Loaders/" data-id="l2qpxu2vjasn8fs8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">June 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05/">May 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">April 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/12/27/test/">什么是爱情</a>
+          </li>
+        
+          <li>
+            <a href="/2014/06/18/Handler-and-Looper/">Handler and Looper</a>
+          </li>
+        
+          <li>
+            <a href="/2014/05/07/Loaders/">Loaders</a>
+          </li>
+        
+          <li>
+            <a href="/2014/04/24/AsyncTask/">AsyncTask</a>
+          </li>
+        
+          <li>
+            <a href="/2013/10/17/android事件分发/">android事件分发</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 linkingr<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>
