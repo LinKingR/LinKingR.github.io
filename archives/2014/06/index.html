@@ -124,6 +124,7 @@
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">Looper<span class="built_in">.</span>prepareMainLooper();</div><div class="line">ActivityThread <span class="keyword">thread</span> <span class="subst">=</span> <span class="literal">new</span> ActivityThread();</div><div class="line"><span class="keyword">thread</span><span class="built_in">.</span>attach(<span class="literal">false</span>);</div><div class="line"><span class="keyword">if</span> (sMainThreadHandler <span class="subst">==</span> <span class="built_in">null</span>) {</div><div class="line">    sMainThreadHandler <span class="subst">=</span> <span class="keyword">thread</span><span class="built_in">.</span>getHandler();</div><div class="line">}</div><div class="line">AsyncTask<span class="built_in">.</span>init();</div><div class="line"><span class="keyword">if</span> (<span class="literal">false</span>) {</div><div class="line">    Looper<span class="built_in">.</span>myLooper()<span class="built_in">.</span>setMessageLogging(<span class="literal">new</span></div><div class="line">            LogPrinter(<span class="keyword">Log</span><span class="built_in">.</span>DEBUG, <span class="string">"ActivityThread"</span>));</div><div class="line">}</div><div class="line">Looper<span class="built_in">.</span><span class="keyword">loop</span>();</div><div class="line">throw <span class="literal">new</span> RuntimeException(<span class="string">"Main thread loop unexpectedly exited"</span>);</div></pre></td></tr></table></figure>
 
 <p>其实主线程就是一个被block住的线程，这个sMainHandler是一个很庞大的handler，里面包含了对activity，service等系统组件的控制，所以可以看到，其实所有比如页面开启、结束，内存回收，服务开启、绑定等等的操作，你的每一次点击，滑动都是通过消息触发并执行的，消息触发机制实现了整个安卓交互的过程，这点是不是很叼！</p>
+<p><img src="http://d.pcs.baidu.com/thumbnail/00ce2c7a7fc70621c9d0c2b7c2a60f4b?fid=2265868045-250528-236330621244287&amp;time=1419667200&amp;sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-USvobe%2FEcC3jN9sSzktqs1zHZgY%3D&amp;rt=sh&amp;expires=2h&amp;r=516646235&amp;sharesign=unknown&amp;size=c710_u500&amp;quality=100" alt=""></p>
 
       
     </div>
@@ -153,7 +154,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">June 2014</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">June 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">April 2014</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -170,6 +171,10 @@
         
           <li>
             <a href="/2014/06/18/Handler-and-Looper/">Handler and Looper</a>
+          </li>
+        
+          <li>
+            <a href="/2014/04/24/AsyncTask/">AsyncTask</a>
           </li>
         
       </ul>
